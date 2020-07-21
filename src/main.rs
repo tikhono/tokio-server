@@ -1,6 +1,6 @@
 use futures::stream::StreamExt;
 use rand::Rng;
-use std::{thread, time};
+//use std::{thread, time};
 use tokio::net::TcpListener;
 use tokio::prelude::*;
 
@@ -19,10 +19,9 @@ async fn main() {
             let mut incoming = listener.incoming();
             while let Some(conn) = incoming.next().await {
                 match conn {
-                    Err(e) => eprintln!("accept failed = {:?}", e),
                     Ok(mut sock) => {
                         tokio::spawn(async move {
-                            let (reader, mut writer) = sock.split();
+                            let (_reader, mut writer) = sock.split();
                             let cap: i64 = rand::thread_rng().gen_range(1, 21);
                             let numbers: Vec<i64> = (0..cap)
                                 .map(|_| rand::thread_rng().gen_range(1, 21))
@@ -30,7 +29,7 @@ async fn main() {
                             println!("cap is: {}", cap);
                             println!("numbers is: {:?}", numbers);
                             match writer.write_i64(cap).await {
-                                Ok(amt) => {
+                                Ok(_amt) => {
                                     println!("wrote {}", cap);
                                 }
                                 Err(err) => {
@@ -39,7 +38,7 @@ async fn main() {
                             }
                             for i in numbers {
                                 match writer.write_i64(i).await {
-                                    Ok(amt) => {
+                                    Ok(_amt) => {
                                         println!("wrote {}", i);
                                     }
                                     Err(err) => {
@@ -49,6 +48,7 @@ async fn main() {
                             }
                         });
                     }
+                    Err(e) => eprintln!("accept failed = {:?}", e),
                 }
             }
         }
