@@ -1,5 +1,6 @@
 use futures::stream::StreamExt;
 use rand::Rng;
+use std::env;
 //use std::{thread, time};
 use tokio::net::TcpListener;
 use tokio::prelude::*;
@@ -7,9 +8,17 @@ use tokio::prelude::*;
 #[tokio::main]
 
 async fn main() {
-    let addr = "127.0.0.1:6142";
+    let args: Vec<String> = env::args().collect();
+    let arg_len = args.len();
+    match arg_len {
+        2 => println!("Get adress: \"{}\"", args[1]),
+        _ => {
+            println!("Specify only one adress in format <host:port>");
+            return;
+        }
+    };
 
-    let mut listener = TcpListener::bind(addr).await.unwrap();
+    let mut listener = TcpListener::bind(&args[1]).await.unwrap();
     //    uncomment to explisitly see how server works asyncronosly with 2 or more clients
     //    thread::sleep(time::Duration::from_millis(
     //        rand::thread_rng().gen_range(3000, 6000),
@@ -22,15 +31,15 @@ async fn main() {
                     Ok(mut sock) => {
                         tokio::spawn(async move {
                             let (_reader, mut writer) = sock.split();
-                            let cap: u8 = rand::thread_rng().gen_range(1, 21);
-                            let numbers: Vec<i64> = (0..cap)
+                            let numbers_count: u8 = rand::thread_rng().gen_range(1, 21);
+                            let numbers: Vec<i64> = (0..numbers_count)
                                 .map(|_| rand::thread_rng().gen_range(i64::MIN, i64::MAX))
                                 .collect();
-                            println!("cap is: {}", cap);
+                            println!("numbers_count is: {}", numbers_count);
                             println!("numbers is: {:?}", numbers);
-                            match writer.write_u8(cap).await {
+                            match writer.write_u8(numbers_count).await {
                                 Ok(_amt) => {
-                                    println!("wrote {}", cap);
+                                    println!("wrote {}", numbers_count);
                                 }
                                 Err(err) => {
                                     eprintln!("IO error {:?}", err);
