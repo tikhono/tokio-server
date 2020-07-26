@@ -24,7 +24,7 @@ async fn main() {
                             let (_reader, mut writer) = sock.split();
                             let cap: u8 = rand::thread_rng().gen_range(1, 21);
                             let numbers: Vec<i64> = (0..cap)
-                                .map(|_| rand::thread_rng().gen_range(1, 21))
+                                .map(|_| rand::thread_rng().gen_range(i64::MIN, i64::MAX))
                                 .collect();
                             println!("cap is: {}", cap);
                             println!("numbers is: {:?}", numbers);
