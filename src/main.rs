@@ -22,14 +22,12 @@ async fn main() {
                     Ok(mut sock) => {
                         tokio::spawn(async move {
                             let (_reader, mut writer) = sock.split();
-                            //let cap: i64 = rand::thread_rng().gen_range(1, 21);
                             let cap: u8 = rand::thread_rng().gen_range(1, 21);
                             let numbers: Vec<i64> = (0..cap)
                                 .map(|_| rand::thread_rng().gen_range(1, 21))
                                 .collect();
                             println!("cap is: {}", cap);
                             println!("numbers is: {:?}", numbers);
-                            //match writer.write_i64(cap).await {
                             match writer.write_u8(cap).await {
                                 Ok(_amt) => {
                                     println!("wrote {}", cap);
