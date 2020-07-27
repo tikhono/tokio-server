@@ -40,7 +40,7 @@ async fn main() {
                                 })
                                 .collect();
                             println!("numbers_count is: {}", numbers_count);
-                            println!("numbers is: {:?}", numbers);
+                            println!("numbers are: {:?}", numbers);
                             match writer.write_u8(numbers_count).await {
                                 Ok(_amt) => {
                                     println!("wrote {}", numbers_count);
