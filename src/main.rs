@@ -66,6 +66,5 @@ async fn main() {
             }
         }
     };
-    println!("Server running on localhost:6142");
     server.await;
 }
